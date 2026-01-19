@@ -1,25 +1,65 @@
-import { scramjetPath } from "@mercuryworkshop/scramjet/path";
-import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
-import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
-import { server as wisp } from "@mercuryworkshop/wisp-js/server";
-import express from "express";
-import http from "http";
+"use strict";
+/**
+ * @type {HTMLFormElement}
+ */
+const form = document.getElementById("uv-form");
+/**
+ * @type {HTMLInputElement}
+ */
+const address = document.getElementById("uv-address");
+/**
+ * @type {HTMLInputElement}
+ */
+const searchEngine = document.getElementById("uv-search-engine");
+/**
+ * @type {HTMLParagraphElement}
+ */
+const error = document.getElementById("uv-error");
+/**
+ * @type {HTMLPreElement}
+ */
+const errorCode = document.getElementById("uv-error-code");
 
-const app = express()
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
 
-app.use("/baremux", express.static(baremuxPath))
-app.use("/epoxy", express.static(epoxyPath))
-app.use("/scram", express.static(scramjetPath))
-app.use(express.static("public"))
+  try {
+    await registerSW();
+  } catch (err) {
+    error.textContent = "Failed to register service worker.";
+    errorCode.textContent = err.toString();
+    throw err;
+  }
 
-const server = http.createServer(app)
-
-server.on("upgrade", (req, socket, head) => {
-    if (req.url?.endsWith("/wisp/")) {
-        wisp.routeRequest(req, socket, head);
-    } else {
-        socket.destroy();
-    }
+  const url = search(address.value, searchEngine.value);
+  location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
 });
 
-server.listen(80, "0.0.0.0")
+async function launchURL(openURL) {
+  try {
+    await registerSW();
+  } catch (err) {
+    error.textContent = "Failed to register service worker.";
+    errorCode.textContent = err.toString();
+    throw err;
+  }
+
+  const url = search(openURL, searchEngine.value);
+  location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
+}
+
+
+async function launchGame(openURL) {
+  try {
+    await registerSW();
+  } catch (err) {
+    error.textContent = "Failed to register service worker.";
+    errorCode.textContent = err.toString();
+    throw err;
+  }
+
+  const url = search(openURL, searchEngine.value);
+  const encodedUrl = __uv$config.prefix + __uv$config.encodeUrl(url);
+  localStorage.setItem('storedURL', encodedUrl);
+  window.location.href="/g/gframe.html"
+}
