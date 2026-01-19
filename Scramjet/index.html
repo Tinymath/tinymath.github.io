@@ -1,8 +1,26 @@
-
-Note: Proxy only works on static browsers<iframe 
-    src="/Scramjet/public/index.html"
-    width="600"
-    height="400">
-</iframe>
-
-<a href="/Scramjet/public/index.html" target="_blank">Go to fullscreen</a>
+<link rel="stylesheet" href = "/assets/css/search.css">
+<div id="content">
+   <form id="uv-form"">
+      <input id="uv-search-engine" value="https://www.google.com/search?q=%s" type="hidden"/> 
+      <input id="uv-address" type="text" placeholder="Search Google or type an URL" class="form__input"/>
+    </form>
+    <div class="desc left-margin">
+      <p id="uv-error"></p>
+      <pre id="uv-error-code"></pre>
+    </div>
+    <br>
+</div>
+<center>
+  <h2 id = "white">Search is broken for now.</h2>
+</center>
+<style>
+  #white{
+    color:white;
+    align-self:center;
+  }
+</style>
+<script src="uv/uv.bundle.js" defer></script>
+<script src="uv/uv.config.js" defer></script>
+<script src="register-sw.js" defer></script>
+<script src="search.js" defer></script>
+<script src="index.js" defer></script>
